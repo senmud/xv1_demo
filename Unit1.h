@@ -69,7 +69,9 @@ private:	// User declarations
 		int size;
 		TPoint pos;
 		TPoint scale;
-        TColor color;
+		TColor color;
+
+        int step[2] = {0,0}, curstep[2] = {0,0};
 
 		rec_obj() {}
 
@@ -81,13 +83,17 @@ private:	// User declarations
             delete rec;
 		}
 
-        void Init(const TPoint &scale, int size=10, TColor color = clGreen) {
+        void Init(const TPoint &scale, int size=10, TColor color = clYellow) {
 			this->scale = scale;
 			this->size = size;
 			this->rec = new TRect();
 			this->rec->SetHeight(this->size);
 			this->rec->SetWidth(this->size);
-            this->color = color;
+			this->color = color;
+
+			Randomize();
+			this->step[0] = Random(10) + 1;
+			this->step[1] = Random(5) + 1;
 		}
 
 		void SetPos(const TPoint &pos) {
@@ -105,30 +111,30 @@ private:	// User declarations
 		void MoveWithRandomY() {
 			TPoint curpos = rec->GetLocation();
 			curpos.X = _getBias(curpos.X, pos.X, scale.X-size);
-			curpos.Y = _getRandomBias(curpos.Y, scale.Y-size);
+			curpos.Y = _getRandomBias(curpos.Y, scale.Y-size, _loopStep(curstep[1], step[1]));
 
 			rec->SetLocation(curpos);
 		}
 
 		void MoveWithRandom() {
 			TPoint curpos = rec->GetLocation();
-			curpos.X = _getRandomBias(curpos.X, scale.X-size);
-			curpos.Y = _getRandomBias(curpos.Y, scale.Y-size);
+			curpos.X = _getRandomBias(curpos.X, scale.X-size, _loopStep(curstep[0], step[0]));
+			curpos.Y = _getRandomBias(curpos.Y, scale.Y-size, _loopStep(curstep[1], step[1]));
             rec->SetLocation(curpos);
 		}
 
 		private:
 		int bias = 3;
-		int _getRandomBias(int val, int limit) {
-			int curbias = bias;
-			if (Random(100) >= 50) {
-                curbias = -bias;
+		int _getRandomBias(int val, int limit, int step) {
+			//int curbias = bias;
+			if (step == 0 && Random(100) >= 50) {
+				bias = -bias;
 			}
-			val += curbias;
+			val += bias;
 			if (val >= limit) {
-				val -= curbias + 1;
+				val -= bias + 1;
 			} else if (val < 0) {
-				val -= curbias - 1;
+				val -= bias - 1;
 			}
 
             return val;
@@ -136,11 +142,16 @@ private:	// User declarations
 		int _getBias(int val, int beginpos, int limit) {
 			val += bias;
 			return val > limit ? beginpos : val;
-        }
+		}
+		int _loopStep(int &thisstep, int compstep) {
+			thisstep++;
+			thisstep = thisstep % compstep;
+            return thisstep;
+		}
 	};
 
 	rec_obj *robj;
-    int rec_size = 5;
+    int rec_size = 10;
 
 	int Step() {
 		int ret = step;
