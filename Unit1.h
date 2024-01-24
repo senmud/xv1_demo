@@ -35,6 +35,7 @@ __published:	// IDE-managed Components
 	TCheckBox *CheckBox2;
 	TPaintBox *PaintBox1;
 	TTimer *Timer1;
+	TButton *Button3;
 	void __fastcall Button1Click(TObject *Sender);
 	void __fastcall NetHTTPRequest1RequestCompleted(TObject * const Sender, IHTTPResponse * const AResponse);
 	void __fastcall NetHTTPRequest1RequestError(TObject * const Sender, const UnicodeString AError);
@@ -45,6 +46,7 @@ __published:	// IDE-managed Components
     void __fastcall KeyMessage(tagMSG &msg, bool &handle);
 	void __fastcall PaintBox1Paint(TObject *Sender);
 	void __fastcall Timer1Timer(TObject *Sender);
+	void __fastcall Button3Click(TObject *Sender);
 
 
 
@@ -175,7 +177,7 @@ private:	// User declarations
 	}
 
 	bool UpdateNode() {
-        if (CheckBox1->Checked) {
+		if (CheckBox1->Checked) {
 			pcurNode = pcurNode->Parent->getNextSibling();
 			if (pcurNode != NULL) {
 				pcurNode = pcurNode->getFirstChild();
@@ -186,6 +188,18 @@ private:	// User declarations
             return true;
 		}
         return false;
+	}
+
+	void ResetDvStatus(const UnicodeString &fn, int stat = 0) {
+		this->pcurDown = NULL;
+		stop = FALSE;
+		ProgressBar1->Position = 0;
+        Button2->Caption = "Download";
+		if (stat == 0) {
+			Log("download " + fn + " Done ..");
+		} else {
+            Log("download " + fn + " abort ..");
+        }
 	}
 
 	void InitRec() {

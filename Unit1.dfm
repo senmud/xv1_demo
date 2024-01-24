@@ -2,7 +2,7 @@ object Form1: TForm1
   Left = 0
   Top = 0
   Caption = 'Form1'
-  ClientHeight = 712
+  ClientHeight = 714
   ClientWidth = 925
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -13,7 +13,7 @@ object Form1: TForm1
   KeyPreview = True
   DesignSize = (
     925
-    712)
+    714)
   TextHeight = 15
   object PaintBox1: TPaintBox
     Left = 24
@@ -24,7 +24,7 @@ object Form1: TForm1
   end
   object Button1: TButton
     Left = 656
-    Top = 82
+    Top = 80
     Width = 73
     Height = 41
     Caption = 'Go'
@@ -53,8 +53,6 @@ object Form1: TForm1
     AutoExpand = True
     Indent = 19
     TabOrder = 2
-    ExplicitLeft = 478
-    ExplicitTop = 103
   end
   object Edit1: TEdit
     Left = 24
@@ -65,8 +63,8 @@ object Form1: TForm1
     TextHint = #36755#20837'url'
   end
   object Button2: TButton
-    Left = 686
-    Top = 640
+    Left = 521
+    Top = 675
     Width = 75
     Height = 25
     Caption = 'Download'
@@ -74,10 +72,10 @@ object Form1: TForm1
     OnClick = Button2Click
   end
   object Edit2: TEdit
-    Left = 480
-    Top = 641
-    Width = 185
-    Height = 23
+    Left = 492
+    Top = 631
+    Width = 269
+    Height = 32
     Hint = #25991#20214#21517
     TabOrder = 5
     TextHint = #20445#23384#25991#20214#21517
@@ -101,8 +99,8 @@ object Form1: TForm1
     Value = 0
   end
   object CheckBox1: TCheckBox
-    Left = 784
-    Top = 644
+    Left = 785
+    Top = 638
     Width = 97
     Height = 17
     Caption = 'Continue'
@@ -110,9 +108,9 @@ object Form1: TForm1
   end
   object Edit3: TEdit
     Left = 32
-    Top = 681
-    Width = 201
-    Height = 23
+    Top = 673
+    Width = 361
+    Height = 33
     ParentShowHint = False
     ReadOnly = True
     ShowHint = True
@@ -126,6 +124,15 @@ object Form1: TForm1
     Height = 23
     Caption = 'HotKey'
     TabOrder = 10
+  end
+  object Button3: TButton
+    Left = 657
+    Top = 675
+    Width = 75
+    Height = 25
+    Caption = 'Next'
+    TabOrder = 11
+    OnClick = Button3Click
   end
   object NetHTTPClient1: TNetHTTPClient
     UserAgent = 'Embarcadero URI Client/1.0'
@@ -144,14 +151,15 @@ object Form1: TForm1
     Asynchronous = True
     Client = NetHTTPClient2
     OnRequestCompleted = NetHTTPRequest2RequestCompleted
+    OnRequestError = NetHTTPRequest1RequestError
     OnRequestException = NetHTTPRequest2RequestException
-    Left = 784
-    Top = 640
+    Left = 832
+    Top = 592
   end
   object NetHTTPClient2: TNetHTTPClient
     UserAgent = 'Embarcadero URI Client/1.0'
-    Left = 840
-    Top = 632
+    Left = 880
+    Top = 592
   end
   object Timer1: TTimer
     Interval = 30

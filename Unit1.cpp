@@ -41,6 +41,7 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 
 void __fastcall TForm1::Button1Click(TObject *Sender)
 {
+
 	if (Edit1->Text.Compare("http") <= 0) {
 		Edit1->Text = "https://www.xv-videos1.com";
 	}
@@ -84,7 +85,8 @@ void __fastcall TForm1::NetHTTPRequest1RequestCompleted(TObject * const Sender, 
 							bias = bias + 3;
 						} else {
                             break;
-                        }
+						}
+
 						m3 = left.SubString(cur, bias);
 						TreeView1->Items->AddChild(pInfoNode, m3);
 						pos += cur + bias;
@@ -216,7 +218,8 @@ void __fastcall TForm1::Button2Click(TObject *Sender)
 		stop = !stop;
 		if (stop) {
 			Log("stop downloading ..");
-            Button2->Caption = "Conti";
+			Button2->Caption = "Conti";
+			NetHTTPRequest2->Cancel();
 		} else {
 			Log("continue downloading " + pcurDown->Text + "..");
 			Button2->Caption = "Download";
@@ -239,6 +242,13 @@ void __fastcall TForm1::NetHTTPRequest2RequestCompleted(TObject * const Sender, 
         return;
 	}
 
+	if (AResponse->GetStatusCode() != 200 || stop == TRUE) {
+		Log("request abort ...");
+        return;
+	} else {
+    	//Log("request code " + AResponse->GetStatusText() + " ..");
+    }
+
     TFileStream *pfs = NULL;
 	UnicodeString fn = Edit2->Text;
 
@@ -257,14 +267,12 @@ void __fastcall TForm1::NetHTTPRequest2RequestCompleted(TObject * const Sender, 
 	ProgressBar1->StepIt();
 
 	pcurDown = pcurDown->GetNextChild(pcurDown);
-	if (pcurDown != NULL && stop == false) {
+	if (pcurDown != NULL) {
         Log("continue downloading " + pcurDown->Text);
 		NetHTTPRequest2->Get(curDom + pcurDown->Text);
         NetHTTPRequest2->Execute();
 	} else {
-		ProgressBar1->Position = 0;
-		Log("download " + fn + " Done ..");
-
+		ResetDvStatus(fn);
 		UpdateNode();
     }
 }
@@ -284,7 +292,7 @@ void __fastcall TForm1::KeyMessage(tagMSG &msg, bool &handle)
 			Edit1->Clear();
 			Edit1->PasteFromClipboard();
 			if (CheckBox2->Checked) {
-                SendMsg(Button1);
+				SendMsg(Button1);
 			}
 		}
 
@@ -327,9 +335,23 @@ void __fastcall TForm1::Timer1Timer(TObject *Sender)
         robj[i].MoveWithRandom();
 	}
 
-    PaintBox1->Refresh();
+	PaintBox1->Refresh();
 
 	//Log(UnicodeString().sprintf(L"update pos: %d.%d", pos.X, pos.Y));
+}
+//---------------------------------------------------------------------------
+
+
+void __fastcall TForm1::Button3Click(TObject *Sender)
+{
+	if (stop != TRUE) {
+		this->SendMsg(Button2);
+	}
+
+	if (stop == TRUE) {
+		ResetDvStatus(Edit2->Text, 1);
+		UpdateNode();
+	}
 }
 //---------------------------------------------------------------------------
 
