@@ -53,6 +53,8 @@ object Form1: TForm1
     AutoExpand = True
     Indent = 19
     TabOrder = 2
+    ExplicitLeft = 482
+    ExplicitTop = 118
   end
   object Edit1: TEdit
     Left = 24
@@ -75,7 +77,7 @@ object Form1: TForm1
     Left = 492
     Top = 631
     Width = 269
-    Height = 32
+    Height = 23
     Hint = #25991#20214#21517
     TabOrder = 5
     TextHint = #20445#23384#25991#20214#21517
@@ -110,7 +112,7 @@ object Form1: TForm1
     Left = 32
     Top = 673
     Width = 361
-    Height = 33
+    Height = 23
     ParentShowHint = False
     ReadOnly = True
     ShowHint = True
@@ -151,14 +153,14 @@ object Form1: TForm1
     Asynchronous = True
     Client = NetHTTPClient2
     OnRequestCompleted = NetHTTPRequest2RequestCompleted
-    OnRequestError = NetHTTPRequest1RequestError
+    OnRequestError = NetHTTPRequest2RequestError
     OnRequestException = NetHTTPRequest2RequestException
-    Left = 832
+    Left = 768
     Top = 592
   end
   object NetHTTPClient2: TNetHTTPClient
     UserAgent = 'Embarcadero URI Client/1.0'
-    Left = 880
+    Left = 832
     Top = 592
   end
   object Timer1: TTimer

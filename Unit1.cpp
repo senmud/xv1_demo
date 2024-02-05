@@ -46,11 +46,18 @@ void __fastcall TForm1::Button1Click(TObject *Sender)
 		Edit1->Text = "https://www.xv-videos1.com";
 	}
 
-    //Memo1->Text = "";
+    linklist.Add(Edit1->Text);
 
-    Button1->Caption = "Sending...";
-	NetHTTPRequest1->Get(Edit1->Text);
-	NetHTTPRequest1->Execute();
+	//Memo1->Text = "";
+
+	if (isLoadLink == False) {
+        isLoadLink = True;
+		Button1->Caption = "Sending...";
+		NetHTTPRequest1->Get(linklist.LoadNext());
+		NetHTTPRequest1->Execute();
+	} else {
+		Button1->Caption = "Waiting...";
+	}
 }
 //---------------------------------------------------------------------------
 
@@ -60,10 +67,11 @@ void __fastcall TForm1::NetHTTPRequest1RequestCompleted(TObject * const Sender, 
 	int code = AResponse->StatusCode;
 	UnicodeString rst = AResponse->ContentAsString();
 	int pos = -1;
+    bool done = False;
 
 	if (Step() != 0) {
         Log("Got download");
-		if ( (pos=rst.Pos("hls-1080p")) > 0 || (pos=rst.Pos("hls-720p")) > 0) {
+		if ( (pos=rst.Pos("hls-1440p")) > 0 || (pos=rst.Pos("hls-1080p")) > 0 || (pos=rst.Pos("hls-720p")) > 0) {
 			UnicodeString m3 = rst.SubString(pos, 20);
 			Button1->Caption = "video..";
 			int extpos = 0;
@@ -79,7 +87,7 @@ void __fastcall TForm1::NetHTTPRequest1RequestCompleted(TObject * const Sender, 
 				while (pos > 0 && (pos+bias) < len) {
 					UnicodeString left = rst.SubString(pos, len-pos);
 					int cur = 0;
-					if ((cur=left.Pos("hls-1080p")) > 0 || (cur=left.Pos("hls-720p")) > 0) {
+					if ((cur=left.Pos("hls-1440p")) > 0 || (cur=left.Pos("hls-1080p")) > 0 || (cur=left.Pos("hls-720p")) > 0) {
                         UnicodeString end = left.SubString(cur, left.Length()-cur);
 						if ((bias=end.Pos(".ts")) > 0) {
 							bias = bias + 3;
@@ -102,8 +110,15 @@ void __fastcall TForm1::NetHTTPRequest1RequestCompleted(TObject * const Sender, 
             }
 		} else {
 			Log("no valid info: " + infoDom);
-			Button1->Caption = "m3u8";
+			Button1->Caption = "no m3u8";
 		}
+
+		if (linklist.IsLoadDone() == False) {
+            NetHTTPRequest1->Get(linklist.LoadNext());
+			NetHTTPRequest1->Execute();
+		} else {
+            isLoadLink = False;
+        }
 		return;
 	}
 
@@ -148,15 +163,18 @@ void __fastcall TForm1::NetHTTPRequest1RequestCompleted(TObject * const Sender, 
 
 	} else {
 		//TreeView1->Items->Add(NULL, "Lost");
-        pos = -2;
-	}
-
-	if (pos < 0) {
+		//pos = -2;
 		UnicodeString str;
 		str = str.sprintf(L"Lost£º%d", pos);
 		Button1->Caption = str;
-	} else {
-        Button1->Caption = "Get";
+
+		if (linklist.IsLoadDone() == False) {
+            NetHTTPRequest1->Get(linklist.LoadNext());
+			NetHTTPRequest1->Execute();
+		} else {
+            isLoadLink = False;
+		}
+        return;
 	}
 }
 //---------------------------------------------------------------------------
@@ -164,7 +182,9 @@ void __fastcall TForm1::NetHTTPRequest1RequestCompleted(TObject * const Sender, 
 void __fastcall TForm1::NetHTTPRequest1RequestError(TObject * const Sender, const UnicodeString AError)
 
 {
-	Log("Error£º"+AError);
+	UnicodeString info;
+	info = info.sprintf(L"Bt1 error: %s, cur que: %d, %d", AError.c_str(), linklist.GetCurLoadID(), linklist.GetCurID());
+	Log(info);
 	//Memo1->Text = "Error:\n" + AError;
 	Button1->Caption = "Error!";
 }
@@ -281,7 +301,13 @@ void __fastcall TForm1::NetHTTPRequest2RequestCompleted(TObject * const Sender, 
 void __fastcall TForm1::NetHTTPRequest2RequestException(TObject * const Sender, Exception * const AError)
 
 {
-	Log("net2 exp: "+AError->ToString()+"eee");
+	Log("net2 exp: "+AError->ToString()+" eee");
+}
+
+void __fastcall TForm1::NetHTTPRequest2RequestError(TObject * const Sender, const UnicodeString AError)
+
+{
+	Log("net2 err: "+AError+" eee");
 }
 //---------------------------------------------------------------------------
 
@@ -354,4 +380,5 @@ void __fastcall TForm1::Button3Click(TObject *Sender)
 	}
 }
 //---------------------------------------------------------------------------
+
 

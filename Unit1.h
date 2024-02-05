@@ -14,6 +14,7 @@
 #include <Vcl.NumberBox.hpp>
 #include <Vcl.Samples.Spin.hpp>
 #include <Vcl.ExtCtrls.hpp>
+#include "LinkInfo.h"
 //---------------------------------------------------------------------------
 class TForm1 : public TForm
 {
@@ -38,7 +39,7 @@ __published:	// IDE-managed Components
 	TButton *Button3;
 	void __fastcall Button1Click(TObject *Sender);
 	void __fastcall NetHTTPRequest1RequestCompleted(TObject * const Sender, IHTTPResponse * const AResponse);
-	void __fastcall NetHTTPRequest1RequestError(TObject * const Sender, const UnicodeString AError);
+	void __fastcall NetHTTPRequest2RequestError(TObject * const Sender, const UnicodeString AError);
 	void __fastcall Memo1Change(TObject *Sender);
 	void __fastcall Button2Click(TObject *Sender);
 	void __fastcall NetHTTPRequest2RequestCompleted(TObject * const Sender, IHTTPResponse * const AResponse);
@@ -47,6 +48,9 @@ __published:	// IDE-managed Components
 	void __fastcall PaintBox1Paint(TObject *Sender);
 	void __fastcall Timer1Timer(TObject *Sender);
 	void __fastcall Button3Click(TObject *Sender);
+	void __fastcall NetHTTPRequest1RequestError(TObject * const Sender, const UnicodeString AError);
+
+
 
 
 
@@ -64,6 +68,8 @@ private:	// User declarations
 	UnicodeString filebase;
 	int fileidx;
 	int concurrent;
+	LinkInfo linklist;
+	bool isLoadLink = false;
 
 	class rec_obj {
 		public:
